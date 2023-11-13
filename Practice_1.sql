@@ -54,9 +54,11 @@ SELECT part, assembly_step FROM parts_assembly
 Where finish_date is null
 --EX14
 select * from lyft_drivers
-Where yearly_salary<=30000 or yearly_salary>=70000
+Where yearly_salary<=30000 
+Or yearly_salary>=70000
 --EX15
-
+select advertising_channel from uber_advertising
+Where year=2019 and money_spent>100000
 
 
 
