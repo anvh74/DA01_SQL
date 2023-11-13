@@ -9,12 +9,29 @@ Where countrycode='JPN'
 Select CITY, STATE from Station
 --EX4
 Select distinct City from Station
-Where City like 'A%' 
-Or City like'E%' 
-Or City like'I%' 
-Or City like'O%'
-Or City like'U%'
---Hoặc 
+Where City like 'A%' Or City like'E%' Or City like'I%' Or City like'O%'Or City like'U%'
+---Hoặc 
 Select distinct City from Station
-Where Substr(City,1,1) In('A','E','I','O','U')
+Where Left(City,1) In('A','E','I','O','U')
 --EX5
+Select distinct City from Station
+Where City like '%a' 
+Or City like'%e' 
+Or City like'%i' 
+Or City like'%o'
+Or City like'%u'
+---hoặc
+Select distinct City from Station
+Where Right(City,1) In('a','e','i','o','u')
+--EX6
+Select distinct City from Station
+Where NOT (City like 'A%' Or City like'E%' Or City like'I%' Or City like'O%'Or City like'U%')
+---hoặc
+Select distinct City from Station
+Where Not (Left(City,1) In('A','E','I','O','U'))
+--EX7
+
+
+
+
+
