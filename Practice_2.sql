@@ -1,4 +1,4 @@
---EX 3 giải cuối cùng!!
+--EX 3 giải cuối cùng
 -- EX1
 Select Distinct City
 from station
@@ -61,3 +61,11 @@ Select class
 from Courses
 Group by class
 having count(student)>=5
+--EX3
+  ---output: dif between actual average salary and miscalulated salary >> phái sinh
+  ---input: ID, Name and actual salary
+  ---Condition: miscalculated salary with zero's removed & round up to next integer
+select 
+ROUND(SUM(salary)/count(name),0) 
+- round(sum(replace(salary,'0',''))/count(name),0)
+from employees
