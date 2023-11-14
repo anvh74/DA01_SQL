@@ -18,8 +18,8 @@ Having count(skill)=3
 ORDER BY candidate_id 
 --EX6
 SELECT user_id, 
-max(post_date) - min(post_date) as diff
+max(DATE(post_date)) - min(DATE(post_date)) as diff
 FROM posts
-Where YEAR(post_date)=2021
+Where (date(post_date)) BETWEEN '01/01/2021' AND '12/31/2021'
 Group BY user_id
 Having count(user_id)>1
