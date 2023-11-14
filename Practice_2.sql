@@ -54,3 +54,10 @@ from followers
 Group by user_id
 Order by user_id ASC
 --EX12
+  ---Output: class with at least 5 students
+  ---Input: student with associated class---
+  ---Condition: phái sinh - lớp có 5 học sing >> Having
+Select class
+from Courses
+Group by class
+having count(student)>=5
