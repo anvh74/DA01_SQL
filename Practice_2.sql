@@ -66,6 +66,6 @@ having count(student)>=5
   ---input: ID, Name and actual salary
   ---Condition: miscalculated salary with zero's removed & round up to next integer
 select 
-ROUND(SUM(salary)/count(name),0) 
-- round(sum(replace(salary,'0',''))/count(name),0)
+round(AVG(salary),0)
+-round(avg(replace(salary,'0','')),0)
 from employees
