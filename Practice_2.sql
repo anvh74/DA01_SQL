@@ -42,3 +42,15 @@ select *
 from Cinema
 where id%2!=0 and description NOT like '%boring%'
 Order by rating DESC
+--EX10
+elect teacher_id,
+count(distinct subject_id) as cnt
+from Teacher
+Group by teacher_id
+--EX11
+Select user_id,
+count(follower_id) as followers_count
+from followers
+Group by user_id
+Order by user_id ASC
+--EX12
