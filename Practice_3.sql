@@ -12,7 +12,12 @@ Concat(Upper(Left(name,1)),lower(substring(name,2,length(name)-1)))
 as name
 from Users
 Order by user_id
-  
+  ---Hoặc
+  Select user_id,
+INITCAP(name) --> Lệnh viết hoa chữ cái đầu của string
+as name
+from Users
+Order by user_id
 --EX3
 SELECT Manufacturer,
 Concat('$',ROUND(sum(total_sales)/1000000,0),' million') as Sale
