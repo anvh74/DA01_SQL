@@ -23,3 +23,22 @@ FROM posts
 Where (date(post_date)) BETWEEN '01/01/2021' AND '12/31/2021'
 Group BY user_id
 Having count(user_id)>1
+--EX7
+SELECT card_name, 
+max(issued_amount) - min(issued_amount) as issuance_difference
+FROM monthly_cards_issued
+Group by card_name
+Order by issuance_difference DESC
+--EX8
+SELECT manufacturer,	
+count(product_id) as associated_drug_count,
+ABS(sum(total_sales - cogs)) as losses
+from pharmacy_sales
+Where total_sales - cogs<=0
+GROUP BY manufacturer
+ORDER BY losses DESC
+--EX9
+select * 
+from Cinema
+where id%2!=0 and description NOT like '%boring%'
+Order by rating DESC
