@@ -64,7 +64,10 @@ from worker
 Where first_name='Amitah'
 
 --EX10
-
+select 
+substring(title,length(winery)+2,4) as vintage_years
+from winemag_p2
+where country= 'Macedonia'
   
 --EX7 <https://leetcode.com/problems/user-activity-for-the-past-30-days-i/?envType=study-plan-v2&envId=top-sql-50>
 Select 
