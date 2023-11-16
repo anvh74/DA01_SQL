@@ -48,4 +48,11 @@ Inner join film_actor as t2 on t1.actor_id=t2.actor_id
 Group by actor_full_name
 Order by film_count DESC
 
+--Question 6
+Select 
+count(t1.address_id) -
+count(t2.customer_id)
+from address as t1
+Left join customer as t2 on t1.address_id=t2.address_id
 
+--Question 7
