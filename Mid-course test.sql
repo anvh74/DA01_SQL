@@ -9,7 +9,13 @@ Case
    When replacement_cost between 9.99 and 19.99 then 'low'
    When replacement_cost between 20.00 and 24.99 then 'medium'
    When replacement_cost between 25.00 and 29.99 then 'high'
-   END AS Replacement_cost_category,
+   END AS Replacement_cost_range,
 Count(*) as films
 From film
-Group by Replacement_cost_category
+Group by Replacement_cost_range
+Having Case
+   When replacement_cost between 9.99 and 19.99 then 'low'
+   When replacement_cost between 20.00 and 24.99 then 'medium'
+   When replacement_cost between 25.00 and 29.99 then 'high'
+   END in ('low')
+--Question 3
