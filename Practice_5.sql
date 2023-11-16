@@ -15,14 +15,23 @@ From emails as t2
 LEFT JOIN texts as t1 on t2.email_id = t1.email_id
 And t1.signup_action = 'Confirmed'
 
---EX3 --LOADING--
-SELECT 
-t1.age_bucket,
-round(sum(t2.time_spent)/Sum(t3.time_spent),2) as sending_time,
-round(Sum(t3.time_spent)/Sum(t2.time_spent),2) as opening_time
+--EX3 
+Select
+ t1.age_bucket,
+ Round((Sum(CASE
+       When t2.activity_type='open' then t2.time_spent Else 0
+       End))*100.00
+   /(Sum(CASE
+       When t2.activity_type in ('open','send') then t2.time_spent Else 0
+       End)),2) As Open_per,
+ Round((Sum(CASE
+       When t2.activity_type='send' then t2.time_spent Else 0
+       End))*100.00
+   /(Sum(CASE
+       When t2.activity_type in ('open','send') then t2.time_spent Else 0
+       End)),2) As Send_per
 From age_breakdown as t1
-Inner join activities as t2 on t1.user_id=t2.user_id and t2.activity_type in ('send')
-Inner join activities as t3 on t1.user_id=t2.user_id and t3.activity_type in ('open')
+INNER JOIN activities as t2 on t1.user_id=t2.user_id
 Group by t1.age_bucket
 
 --EX4 
