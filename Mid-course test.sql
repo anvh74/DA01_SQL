@@ -1,3 +1,5 @@
+--- Link to Practice 5: <https://github.com/anvh74/DA01_SQL/edit/main/Practice_5.sql>
+--Mid-course test:
 --Question 1
 select film_id, title, replacement_cost
 from film
@@ -49,10 +51,37 @@ Group by actor_full_name
 Order by film_count DESC
 
 --Question 6
-Select 
-count(t1.address_id) -
-count(t2.customer_id)
+COUNT(t1.address_id),
+t2.customer_id
 from address as t1
 Left join customer as t2 on t1.address_id=t2.address_id
+Where customer_id is null
+Group by t2.customer_id
 
 --Question 7
+<city --> city_id, city
+ payment --> amount, customer_id
+ customer --> customer_id, address_id
+ address --> address_id, city_id>
+
+Select 
+t1.city as Citites,
+Sum(t4.amount) as Total_amount
+from city as t1
+Inner join address as t2 on t1.city_id=t2.city_id
+Inner join customer as t3 on t2.address_id=t3.address_id
+Inner join payment as t4 on t3.customer_id=t4.customer_id
+Group by Citites
+Order by Total_amount DESC 
+ 
+--Question 8 
+Select 
+t1.city || ', ' || t5.country as City_Country,
+Sum(t4.amount) as Total_amount
+from city as t1
+Inner join country as t5 on t1.country_id=t5.country_id
+Inner join address as t2 on t1.city_id=t2.city_id
+Inner join customer as t3 on t2.address_id=t3.address_id
+Inner join payment as t4 on t3.customer_id=t4.customer_id
+Group by City_Country
+Order by Total_amount DESC
