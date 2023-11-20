@@ -90,4 +90,13 @@ sum(t1.amount) as trans_total_amount, t2.approved_total_amount
 Group by month, country
 
 --EX7--
+With year_rank_product AS
+(SELECT product_id, year, quantity, price, 
+        RANK() OVER(partition by product_id order by year) as year_rank
+        from Sales)
+SELECT product_id, year as first_year, quantity, price
+FROM year_rank_product
+WHERE year_rank = 1
+
+--EX8--
  
