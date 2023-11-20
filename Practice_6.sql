@@ -38,4 +38,10 @@ With caller_times as
   Group by policy_holder_id)
  Select count(policy_holder_id) as member_count from caller_times
  Where call_count>=3
+
+--EX4--
+Select page_id from pages as t1
+Where not page_id in
+  (SELECT page_id from page_likes as t2
+   Where t1.page_id=t2.page_id)
   
