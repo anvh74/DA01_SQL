@@ -49,11 +49,45 @@ Where not page_id in
 With active_user as 
  (SELECT user_id, EXTRACT(month from event_date) as month
   from user_actions 
-  Where event_type in ('sign-in', 'like', 'comment')
+  Where EXTRACT(year from event_date)='2022'
+  and event_type in ('sign-in', 'like', 'comment')
   GROUP BY user_id, month )
 
-Select t1.month, count(DISTINCT t1.user_id) from active_user as t1
-Join active_user as t2
+Select t1.month, count(DISTINCT t1.user_id) from active_user as t1    --> t1 current month
+Join active_user as t2                                                --> t2 previous month
 on t1.user_id=t2.user_id and t1.month=t2.month+1
-Where t2.month=6
+Where t1.month=7
 Group by t1.month
+
+--EX6--
+
+SELECT  DATE_FORMAT(trans_date, '%Y-%m') as month,    -->> lọc năm vả tháng
+        country, 
+        COUNT(id) as trans_count, 
+        SUM(Case When state in ('approved') then 1 else 0 END) as approved_count,
+        SUM(amount) as trans_total_amount,
+        SUM(Case When State in ('approved') then amount else 0 END) as approved_total_amount
+FROM  Transactions
+GROUP BY month,country
+ 
+--With CTE-- >> Processing...
+With approved_trans as
+  (Select DATE_FORMAT(trans_date, '%Y-%m') as month,
+   country,
+   count(id) as approved_count,
+   sum(amount) as approved_total_amount
+   from Transactions 
+   Where state in ('approved')
+   Group by month, country)
+
+Select DATE_FORMAT(t1.trans_date, '%Y-%m') as month,
+t1.country,
+count(t1.id) as trans_count,
+t2.approved_count, 
+sum(t1.amount) as trans_total_amount, t2.approved_total_amount
+ from Transactions as t1
+ Join approved_trans as t2 on t1.trans_date=t2.month and t1.country=t2.country
+Group by month, country
+
+--EX7--
+ 
