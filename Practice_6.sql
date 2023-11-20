@@ -44,4 +44,16 @@ Select page_id from pages as t1
 Where not page_id in
   (SELECT page_id from page_likes as t2
    Where t1.page_id=t2.page_id)
-  
+
+--EX5--
+With active_user as 
+ (SELECT user_id, EXTRACT(month from event_date) as month
+  from user_actions 
+  where EXTRACT(month from event_date) in ('6','7') 
+  and EXTRACT(year from event_date) = 2022 
+  and event_type in ('sign-in', 'like', 'comment')
+  GROUP BY user_id, month )
+
+Select user_id, count(DISTINCT month) from active_user 
+Group by user_id
+Having count(DISTINCT month)>1
