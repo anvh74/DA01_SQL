@@ -49,11 +49,11 @@ Where not page_id in
 With active_user as 
  (SELECT user_id, EXTRACT(month from event_date) as month
   from user_actions 
-  where EXTRACT(month from event_date) in ('6','7') 
-  and EXTRACT(year from event_date) = 2022 
-  and event_type in ('sign-in', 'like', 'comment')
+  Where event_type in ('sign-in', 'like', 'comment')
   GROUP BY user_id, month )
 
-Select user_id, count(DISTINCT month) from active_user 
-Group by user_id
-Having count(DISTINCT month)>1
+Select t1.month, count(DISTINCT t1.user_id) from active_user as t1
+Join active_user as t2
+on t1.user_id=t2.user_id and t1.month=t2.month+1
+Where t2.month=6
+Group by t1.month
