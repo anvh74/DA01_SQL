@@ -31,5 +31,11 @@ from title_by_company
   Select category, product, total_spend from top_spend
   Where category_ranking<=2
 
---EX3
+--EX3--
+With caller_times as
+ (Select policy_holder_id, count(case_id) as call_count
+  from callers
+  Group by policy_holder_id)
+ Select count(policy_holder_id) as member_count from caller_times
+ Where call_count>=3
   
