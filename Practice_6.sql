@@ -129,6 +129,18 @@ Order by employee_id
     Limit 1)
 
 --EX12--
+Select id, sum(num) as num from
+  (Select requester_id as id, count(accepter_id) as num from RequestAccepted
+   Group by requester_id
+
+  Union all
+  
+  Select accepter_id as id, count(requester_id) as num from RequestAccepted
+   Group by accepter_id) as total
+   
+Group by id
+Order by num DESC
+Limit 1
 
 
  
