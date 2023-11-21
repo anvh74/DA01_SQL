@@ -74,3 +74,15 @@ From transactions)
 
 Select count(credit_card_id) from t1
 Where diff<=10
+
+--EX 7-- 
+ With top_spend as
+   (Select category, product, sum(spend) as total_spend,
+    rank() over (partition by category order by sum(spend) DESC) as category_ranking
+    from product_spend
+    Where Extract(year FROM transaction_date)=2022
+    Group by category, product)
+  Select category, product, total_spend from top_spend
+  Where category_ranking<=2
+
+--EX8--
