@@ -21,7 +21,7 @@ from title_by_company
 
 --<Hoặc dùng subquery in From>
 
---EX2-- >> 2 PRODUCT có doanh thu cao nhất CỦA MỖI C ATEGORY >> Dùng rank <Source: https://stackoverflow.com/questions/70191606/sum-overpartition-by-order-by-a-b>
+--EX2-- >> 2 PRODUCT có doanh thu cao nhất CỦA MỖI CATEGORY >> Dùng rank <Source: https://stackoverflow.com/questions/70191606/sum-overpartition-by-order-by-a-b>
  With top_spend as
    (Select category, product, sum(spend) as total_spend,
     rank() over (partition by category order by sum(spend) DESC) as category_ranking
@@ -61,7 +61,7 @@ Group by t1.month
 
 --EX6--
 
-SELECT  DATE_FORMAT(trans_date, '%Y-%m') as month,    -->> lọc năm vả tháng
+SELECT  DATE_FORMAT(trans_date, '%Y-%m') as month,    -->> lọc năm và tháng
         country, 
         COUNT(id) as trans_count, 
         SUM(Case When state in ('approved') then 1 else 0 END) as approved_count,
