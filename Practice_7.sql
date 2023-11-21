@@ -86,3 +86,15 @@ Where diff<=10
   Where category_ranking<=2
 
 --EX8--
+With ranking_table as
+(SELECT t3.artist_name as artist_name, 
+Dense_rank () Over (order by count(t2.song_id) DESC) as artist_rank 
+from global_song_rank as t1
+Join songs as t2 on t1.song_id=t2.song_id
+Join artists as t3 on t2.artist_id=t3.artist_id
+Where t1.rank<=10
+Group by t3.artist_name)
+
+SELECT *
+FROM ranking_table
+WHERE artist_rank <= 5
