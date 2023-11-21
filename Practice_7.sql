@@ -45,19 +45,23 @@ ORDER BY transaction_date
 
 --EX5--
 
+With t1 AS
+(SELECT user_id, tweet_date, tweet_count, 
+Row_number() Over(Partition by user_id order by tweet_date) as row_number 
 FROM tweets
 GROUP BY user_id, tweet_date, tweet_count)
 
-Select user_id, tweet_date, tweet_count,
+Select user_id, tweet_date,
  Case 
   When row_number<=3 Then round(avg(tweet_count) Over(Partition by user_id 
                         order by tweet_date),2)  
-  Else cast((lag((tweet_count),2) Over(Partition by user_id 
+  Else ROUND (CAST ((lag((tweet_count),2) Over(Partition by user_id 
                         order by tweet_date) 
-        + lag(tweet_count) Over(Partition by user_id 
+                    +lag(tweet_count) Over(Partition by user_id 
                         order by tweet_date) 
-        + tweet_count)/3) as decimal   
+                    +tweet_count)AS DECIMAL)/3,2)  
   End as rolling_3day_count
   From t1
   GROUP BY user_id, tweet_date, tweet_count, row_number
-  
+
+--EX6--
