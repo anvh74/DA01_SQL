@@ -65,3 +65,12 @@ Select user_id, tweet_date,
   GROUP BY user_id, tweet_date, tweet_count, row_number
 
 --EX6--
+With t1 as
+(SELECT credit_card_id,
+EXTRACT(minute FROM(transaction_timestamp 
+- lag(transaction_timestamp) Over (PARTITION BY merchant_id, credit_card_id, amount
+                             ORDER BY transaction_timestamp))) as diff
+From transactions)
+
+Select count(credit_card_id) from t1
+Where diff<=10
