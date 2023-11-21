@@ -99,4 +99,36 @@ FROM year_rank_product
 WHERE year_rank = 1
 
 --EX8--
+Select customer_id from customer
+Group by customer_id
+Having count(DISTINCT product_key)=(Select count(DISTINCT product_key) from product)
+
+--EX9--
+Select employee_id
+From employees
+Where salary<30000
+and manager_id not in (Select employee_id from employees)
+Order by employee_id
+
+--EX10-- >> Link trên ripid trùng với EX1, các bạn cho mình xin link khác nhé
+
+--EX11--
+(select t2.name as results
+    from movierating as t1
+    Join users as t2 on t1.user_id=t2.user_id
+    Group by t1.user_id
+    Order by count( distinct t1.movie_id) DESC, name
+    Limit 1)
+ Union all    
+    (Select t2.title as results
+    from movierating as t1
+    Join movies as t2 on t1.movie_id=t2.movie_id
+    where t1.created_at between '2020-02-01' and '2020-02-28'
+    Group by t1.movie_id
+    Order by avg(t1.rating) DESC, t2.title 
+    Limit 1)
+
+--EX12--
+
+
  
