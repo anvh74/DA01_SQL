@@ -2,7 +2,7 @@
 --II. Ad-hoc tasks
 --1-- Thống kê tổng số lượng người mua và số lượng đơn hàng đã hoàn thành mỗi tháng ( Từ 1/2019-4/2022)
 
---Note: Vì yêu cầu số lượng đơn hàng đã hoàn thành (aka status 'Complete') --> dùng 'delivered_date' ở bảng oder_items làm mốc thời gian ghi nhận 
+-- (*) Note: Vì yêu cầu số lượng đơn hàng đã hoàn thành (aka status 'Complete') --> dùng 'delivered_date' ở bảng oder_items làm mốc thời gian ghi nhận 
 Select 
 FORMAT_DATE('%Y-%m', t2.delivered_at) as month_year, 
 count(DISTINCT t1.user_id) as total_user,
@@ -26,7 +26,7 @@ ORDER BY month_year
 */
 
 --2-- Giá trị đơn hàng trung bình (AOV) và số lượng khách hàng mỗi tháng
---Note: vì yêu cầu tập trung vào người dùng và không yêu cầu đơn hàng đã hoàn thành nên sử dụng 'created_at' (theo mình hiểu thì là ngày đơn hàng được tạo) làm mốc thời gian 
+--(*) Note: vì yêu cầu tập trung vào người dùng và không yêu cầu đơn hàng đã hoàn thành nên sử dụng 'created_at' (theo mình hiểu thì là ngày đơn hàng được tạo) làm mốc thời gian 
 Select 
 FORMAT_DATE('%Y-%m', created_at) as month_year,
 count(DISTINCT user_id) as distinct_users,
@@ -90,3 +90,32 @@ group by gender, tag
   --> Insight: trong giai đoạn Từ 1/2019-4/2022
       - Giới tính Female: lớn tuổi nhất là 70 tuổi (525 người người dùng); nhỏ tuổi nhất là 12 tuổi (569 người dùng)
       - Giới tính Male: lớn tuổi nhất là 70 tuổi (529 người người dùng); nhỏ tuổi nhất là 12 tuổi (546 người dùng)
+
+/*
+--4-- Thống kê top 5 sản phẩm có lợi nhuận cao nhất từng tháng (xếp hạng cho từng sản phẩm). 
+--Output: month_year ( yyyy-mm), product_id, product_name, sales, cost, profit, rank_per_month
+--Hint: Sử dụng hàm dense_rank()
+*/
+--(*) Note: đơn hàng tạo ra doanh thu là đơn hàng có status 'Complete' --> sử dụng deliver_date
+*/
+
+Select * from 
+(With product_profit as
+(
+Select 
+CAST(FORMAT_DATE('%Y-%m', t1.delivered_at) AS STRING) as month_year,
+t1.product_id as product_id,
+t2.name as product_name,
+sum(CAST(t1.sale_price AS DECIMAL)) as sales,
+sum(CAST(t2.cost AS DECIMAL)) as cost,
+CAST(sum(CAST(t1.sale_price AS DECIMAL))-sum(CAST(t2.cost AS DECIMAL)) AS Decimal)  as profit
+from bigquery-public-data.thelook_ecommerce.order_items as t1
+Join bigquery-public-data.thelook_ecommerce.products as t2 on t1.product_id=t2.id
+Where t1.status='Complete'
+Group by month_year, t1.product_id, t2.name
+)
+Select * ,
+dense_rank() OVER ( PARTITION BY month_year ORDER BY month_year,profit) as rank
+from product_profit
+) as rank_table
+Where rank_table.rank<=5
