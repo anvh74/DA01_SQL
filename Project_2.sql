@@ -106,9 +106,9 @@ Select
 CAST(FORMAT_DATE('%Y-%m', t1.delivered_at) AS STRING) as month_year,
 t1.product_id as product_id,
 t2.name as product_name,
-sum(CAST(t1.sale_price AS DECIMAL)) as sales,
-sum(CAST(t2.cost AS DECIMAL)) as cost,
-CAST(sum(CAST(t1.sale_price AS DECIMAL))-sum(CAST(t2.cost AS DECIMAL)) AS Decimal)  as profit
+round(sum(t1.sale_price),2) as sales,
+round(sum(t2.cost),2) as cost,
+round(sum(t1.sale_price)-sum(t2.cost),2)  as profit
 from bigquery-public-data.thelook_ecommerce.order_items as t1
 Join bigquery-public-data.thelook_ecommerce.products as t2 on t1.product_id=t2.id
 Where t1.status='Complete'
@@ -119,3 +119,24 @@ dense_rank() OVER ( PARTITION BY month_year ORDER BY month_year,profit) as rank
 from product_profit
 ) as rank_table
 Where rank_table.rank<=5
+order by rank_table.month_year
+
+/*
+5.Doanh thu tính đến thời điểm hiện tại trên mỗi danh mục
+Thống kê tổng doanh thu theo ngày của từng danh mục sản phẩm (category) trong 3 tháng qua ( giả sử ngày hiện tại là 15/4/2022)
+Output: dates (yyyy-mm-dd), product_categories, revenue
+*/
+--(*) Note: đơn hàng tạo ra doanh thu là đơn hàng có status 'Complete' --> sử dụng deliver_date
+*/
+Select 
+CAST(FORMAT_DATE('%Y-%m-%d', t1.delivered_at) AS STRING) as dates,
+t2.category as product_categories,
+round(sum(t1.sale_price),2) as revenue,
+from bigquery-public-data.thelook_ecommerce.order_items as t1
+Join bigquery-public-data.thelook_ecommerce.products as t2 on t1.product_id=t2.id
+Where t1.status='Complete' and t1.delivered_at BETWEEN '2022-01-15 00:00:00' AND '2022-04-16 00:00:00'
+Group by dates, product_categories
+Order by dates
+
+
+
