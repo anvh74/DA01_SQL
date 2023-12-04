@@ -38,15 +38,55 @@ ORDER BY month_year
 
 /*--> Insight: - Giai đoạn năm 2019 do số lượng người dùng ít khiến giá trị đơn hàng trung bình qua các tháng có tỷ lệ biến động cao.
                - Giai đoạn từ cuối năm 2019 lượng người dùng ổn định trên 400 và nhìn chung tiếp tục tăng qua các tháng, giá trị đơn hàng trung bình qua các tháng ổn định ở mức ~80-90
-                
+ */
+    
+/*    
 --3-- Nhóm khách hàng theo độ tuổi
 Tìm các khách hàng có trẻ tuổi nhất và lớn tuổi nhất theo từng giới tính ( Từ 1/2019-4/2022)
-Output: first_name, last_name, gender, age, tag (hiển thị youngest nếu trẻ tuổi nhất, oldest nếu lớn tuổi nhất)
-Hint: Sử dụng UNION các KH tuổi trẻ nhất với các KH tuổi trẻ nhất 
-tìm các KH tuổi trẻ nhất và gán tag ‘youngest’  
-tìm các KH tuổi trẻ nhất và gán tag ‘oldest’ 
-Insight là gì? (Trẻ nhất là bao nhiêu tuổi, số lượng bao nhiêu? Lớn nhất là bao nhiêu tuổi, số lượng bao nhiêu) 
-Note: Lưu output vào temp table rồi đếm số lượng tương ứng 
+*/
 
-
-
+With female_age as 
+(
+select min(age) as min_age, max(age) as max_age
+from bigquery-public-data.thelook_ecommerce.users
+Where gender='F' and created_at BETWEEN '2019-01-01 00:00:00' AND '2022-05-01 00:00:00'
+),
+male_age as 
+(
+select min(age) as min_age, max(age) as max_age
+from bigquery-public-data.thelook_ecommerce.users
+Where gender='M' and created_at BETWEEN '2019-01-01 00:00:00' AND '2022-05-01 00:00:00'
+),
+young_old_group as 
+(
+Select t1.first_name, t1.last_name, t1.gender, t1.age
+from bigquery-public-data.thelook_ecommerce.users as t1
+Join female_age as t2 on t1.age=t2.min_age or t1.age=t2.max_age
+Where t1.gender='F'and created_at BETWEEN '2019-01-01 00:00:00' AND '2022-05-01 00:00:00'
+UNION ALL
+Select t3.first_name, t3.last_name, t3.gender, t3.age
+from bigquery-public-data.thelook_ecommerce.users as t3
+Join female_age as t4 on t3.age=t4.min_age or t3.age=t4.max_age
+Where t3.gender='M' and created_at BETWEEN '2019-01-01 00:00:00' AND '2022-05-01 00:00:00'
+),
+age_tag as
+(
+Select *, 
+Case 
+     when age in (select min(age) as min_age
+     from bigquery-public-data.thelook_ecommerce.users
+     Where gender='F' and created_at BETWEEN '2019-01-01 00:00:00' AND '2022-05-01 00:00:00') then 'Youngest'
+     when age in (select min(age) as min_age
+     from bigquery-public-data.thelook_ecommerce.users
+     Where gender='M'and created_at BETWEEN '2019-01-01 00:00:00' AND '2022-05-01 00:00:00') then 'Youngest'
+     Else 'Oldest'
+END as tag
+from young_old_group 
+)
+Select gender, tag, count(*) as user_count
+from age_tag
+group by gender, tag
+  /*  
+  --> Insight: trong giai đoạn Từ 1/2019-4/2022
+      - Giới tính Female: lớn tuổi nhất là 70 tuổi (525 người người dùng); nhỏ tuổi nhất là 12 tuổi (569 người dùng)
+      - Giới tính Male: lớn tuổi nhất là 70 tuổi (529 người người dùng); nhỏ tuổi nhất là 12 tuổi (546 người dùng)
