@@ -16,7 +16,7 @@ Group by month_year
 ORDER BY month_year
 
 /*--> Insight: 
-    - Nhìn chung số lượng người mua hàng và đơn hàng tiêu thụ đã hoàn thành tăng dần theo mỗi tháng và năm, thể hiện xu hướng tăng của nhóm người mua trung thành của TheLook   
+    - Nhìn chung số lượng người mua hàng và đơn hàng tiêu thụ đã hoàn thành tăng dần theo mỗi tháng và năm   
     - Giai đoạn 2019-tháng 1 2022: người mua hàng có xu hướng mua sắm nhiều hơn vào ba tháng cuối năm (10-12) và tháng 1 năm kế tiếp do nhu cầu mua sắm cuối/đầu năm tăng 
            và nhiều chương trình khuyến mãi/giảm giá cuối năm           
     - Giai đoạn bốn tháng đầu năm 2022: ghi nhận tỷ lệ lượng người mua tăng mạnh so với ba tháng cuối năm 2021, khả năng do TheLook triển khai chương trình khuyến mãi mới nhằm 
@@ -226,6 +226,18 @@ Select cohort_month,
 (100.00 - round(100.00* m3/m1,2)) || '%' as m3,
 (100.00 - round(100.00* m4/m1,2))|| '%' as m4
 from customer_cohort
+
+--> Chart Cohort https://docs.google.com/spreadsheets/d/1Ke2bhPAaG2rDjMfZdcWeTw-mevymA4JHXdOOZ6KVA1Q/edit#gid=505337796
+/*
+Nhìn chung hằng tháng TheLook ghi nhận số lượng người dùng mới tăng dần đều, thể hiện chiến dịch quảng cáo tiếp cận người dùng
+mới có hiệu quả.
+Tuy nhiên trong giai đoạn 4 tháng đầu tính từ lần mua hàng/sử dụng trang thương mại điện tử TheLook, tỷ lệ người dùng cũ
+quay lại sử dụng trong tháng kế tiếp khá thấp: dao động dưới 10% trong giai đoạn từ 2019-01 đến 2023-07 và tăng lên mức 
+trên 10% trong những tháng còn lại của năm 2023, trong đó cao nhất là tháng đầu tiên sau 2023-10 với 18.28%.
+ --> Tỷ lệ khách hàng trung thành thấp, TheLook nên xem xét cách quảng bá để thiếp lập và tiếp cận nhóm khách hàng trung thành
+nhằm tăng doanh thu từ nhóm này và tiết kiệm các chi phí marketing
+
+
 
 
 
