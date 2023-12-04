@@ -216,17 +216,18 @@ Select cohort_month,
 round(100.00* m1/m1,2) || '%' as m1,
 round(100.00* m2/m1,2) || '%' as m2,
 round(100.00* m3/m1,2) || '%' as m3,
-round(100.00* m4/m1,2) || '%' as m4,
+round(100.00* m4/m1,2) || '%' as m4
 from customer_cohort
 )
 --CHURN COHORT--
-churn_cohort as
-(
 Select cohort_month,
-round(100.00* m1/m1,2) || '%' as m1,
-round(100.00* m2/m1,2) || '%' as m2,
-round(100.00* m3/m1,2) || '%' as m3,
-round(100.00* m4/m1,2) || '%' as m4,
+(100.00 - round(100.00* m1/m1,2)) || '%' as m1,
+(100.00 - round(100.00* m2/m1,2)) || '%' as m2,
+(100.00 - round(100.00* m3/m1,2)) || '%' as m3,
+(100.00 - round(100.00* m4/m1,2))|| '%' as m4
 from customer_cohort
-)
+
+
+
+
 
