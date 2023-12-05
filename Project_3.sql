@@ -1,6 +1,6 @@
 --Cont project 1 sau khi chạy câu lệnh delete các outliers--
 /* 1) Doanh thu theo từng ProductLine, Year  và DealSize?
-Output: PRODUCTLINE, YEAR_ID, DEALSIZE, REVENUE
+Output: PRODUCTLINE, YEAR_ID, DEALSIZE, REVENUE  <với revenue mình sử dụng cột sales sau khi so sánh sales và quantityordered * priceeach>
 */
 Select productline, year_id, dealsize, sum(sales) as revenue
 from sales_dataset_rfm_prj
@@ -48,6 +48,62 @@ Where rank=1
             - 2003: Planes
             - 2004: Trains
             - 2005: Motorcycles  */
+
+/*
+5) Ai là khách hàng tốt nhất, phân tích dựa vào RFM 
+(sử dụng lại bảng customer_segment ở buổi học 23)
+*/
+--Tạo bảng segment_score và import customer_segment ở buổi học 23
+  CREATE TABLE segment_score
+(
+    segment Varchar,
+    scores Varchar)
+  
+--CÁC BƯỚC RFM <RECENCY-FREQUENCY-MONETARY>--
+/*Bước 1: tính giá trị R-F-M
+*/
+select * from sales_dataset_rfm_prj where ordernumber=10119; --> customers' info & status per order 
+--CÁC BƯỚC PHÂN TÍCH THEO RFM <RECENCY-FREQUENCY-MONETARY>--
+/*Bước 1: tính giá trị R-F-M
+*/
+With customer_rfm as
+(
+Select 
+customername,
+current_date - max(orderdate) as r,
+count(distinct ordernumber) as f,
+sum(sales) as m
+from sales_dataset_rfm_prj
+Group by customername
+),
+/*Bước 2: Chia các giá trị theo các thang điểm từ 1-5
+*/
+customer_score as
+(
+Select customername, 
+ntile(5) OVER(ORDER BY r) as r_score,
+ntile(5) OVER(ORDER BY f) as f_score,
+ntile(5) OVER(ORDER BY m) as m_score
+from customer_rfm
+),
+/*Bước 3: phân nhóm 125 theo tổ hợp RFM
+*/
+rfm_final as
+(
+Select customername,
+cast(r_score as varchar)||cast(f_score as varchar)||cast(m_score as varchar) 
+	as rfm_score
+from customer_score
+)
+/* Bước 4: phân loại 125 tổ hợp segment_score
+*/
+Select t1.customername,
+t2.segment
+from rfm_final as t1
+join public.segment_score as t2 on t1.rfm_score=t2.scores
+  --> Khách hàng tốt nhất (Champions) là "Baane Mini Imports"
+
+
 
 
 
