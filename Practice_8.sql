@@ -52,23 +52,19 @@ from cte
 Where previous is not null
 
 --EX 5--
-With 
-unique_lat_lon as
+select ROUND(sum(tiv_2016), 2) tiv_2016 from 
 (
-  Select concat(lat,lon) as lat_lon
-from insurance 
-group by lat_lon
-Having count(concat(lat,lon))=1
-),
-same_tiv2015 as
-(
-Select tiv_2015
-from insurance 
-having count(tiv_2015)>1
-)
-Select sum(t1.tiv_2016) as tiv_2016 from insurance as t1
-Inner join unique_lat_lon as t2 on concat(t1.lat,t1.lon)= t2.lat_lon
-Inner join same_tiv2015 as t3 on t1.tiv_2015=t3.tiv_2015
+ select *, 
+ count(tiv_2015)over(partition by tiv_2015 order by tiv_2015) as tiv2015_count
+ count(concat(lat, lon))over(partition by lat, lon order by lat, lon) as lat_lon
+ from insurance
+) as t1 
+where tiv2015_count> 1 and lat_lon = 1
+
+--EX 6 --
+
+
+
 
 
 
