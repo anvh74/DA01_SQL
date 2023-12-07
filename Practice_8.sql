@@ -19,3 +19,19 @@ min(event_date) OVER (PARTITION BY player_id ORDER BY event_date) as first_day,
 lead(event_date) OVER (PARTITION BY player_id ORDER BY event_date) as next_day
 from Activity) as first_next_day
 
+--EX 3--
+Select 
+Case 
+  when id<max then
+      case when id%2=0 then id-1 else id+1 END
+  else max END as id, student
+from
+(Select id, student, (select max(id) as max_id from seat) as max
+from seat) as a
+ORDER BY id
+
+
+
+
+
+
