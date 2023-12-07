@@ -32,7 +32,12 @@ from seat
 Order by id 
 
 --EX 4 --
-
+Select 
+distinct visited_on,
+sum(amount) OVER (PARTITION BY visited_on ORDER BY visited_on DESC ROWS BETWEEN 7 PRECEDING AND CURRENT ROW) as amount, 
+avg(amount) OVER (PARTITION BY visited_on ORDER BY visited_on DESC ROWS BETWEEN 7 PRECEDING AND CURRENT ROW) as average_amount  
+from customer
+Order by visited_on DESC
 
 
 
