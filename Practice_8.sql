@@ -10,4 +10,12 @@ from
   from delivery) as first_order_date
 
 --EX 2--
+Select 
+round(sum(case when next_day - first_day=1 then 1 else 0 end) 
+       /count(distinct player_id),2) as fraction
+from
+(Select player_id, 
+min(event_date) OVER (PARTITION BY player_id ORDER BY event_date) as first_day,
+lead(event_date) OVER (PARTITION BY player_id ORDER BY event_date) as next_day
+from Activity) as first_next_day
 
