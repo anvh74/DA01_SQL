@@ -22,13 +22,13 @@ from Activity) as first_next_day
 --EX 3--
 Select 
 Case 
-  when id<max then
-      case when id%2=0 then id-1 else id+1 END
-  else max END as id, student
-from
-(Select id, student, (select max(id) as max_id from seat) as max
-from seat) as a
-ORDER BY id
+  when id < (select max(id) from seat) then
+     case when id%2=0 then id-1 else id+1 END 
+  else (select max(id) from seat) END as id, student
+from seat
+Order by id
+
+--EX 4 --
 
 
 
