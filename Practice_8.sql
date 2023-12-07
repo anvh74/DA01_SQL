@@ -32,12 +32,24 @@ from seat
 Order by id 
 
 --EX 4 --
-Select 
-distinct visited_on,
-sum(amount) OVER (PARTITION BY visited_on ORDER BY visited_on DESC ROWS BETWEEN 7 PRECEDING AND CURRENT ROW) as amount, 
-avg(amount) OVER (PARTITION BY visited_on ORDER BY visited_on DESC ROWS BETWEEN 7 PRECEDING AND CURRENT ROW) as average_amount  
+With cte as
+(
+Select visited_on,
+   --> [ROWS BEWTEEN...CURRENT ROW] - tham khảo từ một solution của EX5 Practice 6
+sum(amount) OVER (ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as amount, 
+ROUND(avg(amount) OVER (ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW),2) as average_amount,
+lag(visited_on,6) over (ORDER BY visited_on) as previous  
+from 
+(Select 
+distinct visited_on as visited_on,
+sum(amount) as amount
 from customer
-Order by visited_on DESC
+Group by visited_on) as t1
+Order by visited_on 
+)
+Select visited_on, amount, average_amount 
+from cte
+Where previous is not null
 
 
 
