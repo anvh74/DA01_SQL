@@ -62,8 +62,29 @@ select ROUND(sum(tiv_2016), 2) tiv_2016 from
 where tiv2015_count> 1 and lat_lon = 1
 
 --EX 6 --
+Select Department, Employee, Salary
+from(
+SELECT 
+t1.name as Department,
+t2.name as Employee,
+t2.salary as Salary,
+DENSE_rank() Over (Partition by t1.name order by t2.salary DESC) as rank 
+from department as t1
+Join employee as t2 on t1.id=t2.departmentid
+) as Dept_Emp
+Where rank <=3
 
+--EX 7 --
+Select person_name from
+(
+Select *,
+Sum(weight) OVER (Order by turn) as total_weight
+from queue) as sum_weight
+Where total_weight<=1000
+ORDER BY total_weight DESC
+Limit 1
 
+--EX 8 --
 
 
 
