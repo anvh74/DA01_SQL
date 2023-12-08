@@ -85,6 +85,37 @@ ORDER BY total_weight DESC
 Limit 1
 
 --EX 8 --
+With prices as
+(
+SELECT *, 
+(Select '10') as price
+FROM products)
+
+Select product_id,
+Case when
+     lag(change_date) Over (partition by product_id order by change)
+With prices as
+(
+SELECT *, 
+(Select cast('10' as int) as price)
+FROM products
+)
+Select product_id,
+Case when
+    lag(change_date) Over (partition by product_id order by change_date) is null then price
+    Else 0
+END as h_price
+from prices
+
+Output
+| product_id | new_price | change_date | price |
+| ---------- | --------- | ----------- | ----- |
+| 1          | 20        | 2019-08-14  | 10    |
+| 2          | 50        | 2019-08-14  | 10    |
+| 1          | 30        | 2019-08-15  | 10    |
+| 1          | 35        | 2019-08-16  | 10    |
+| 2          | 65        | 2019-08-17  | 10    |
+| 3          | 20        | 2019-08-18  | 10    |
 
 
 
