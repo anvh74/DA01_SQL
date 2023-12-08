@@ -117,7 +117,15 @@ Output
 | 2          | 65        | 2019-08-17  | 10    |
 | 3          | 20        | 2019-08-18  | 10    |
 
-
+Select product_id,
+Case 
+  When lag(change_date) Over (partition by product_id order by change_date) is null and
+     lead(change_date) Over (partition by product_id order by change_date) is null then '10'
+  When change_date<='2019-08-16'
+      then first_value(new_price) OVER (PARTITION BY product_id ORDER by change_date DESC)
+     Else null
+     END as price
+from products 
 
 
 
