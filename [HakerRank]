@@ -1,0 +1,11 @@
+/*
+1. Link:
+https://www.hackerrank.com/challenges/sql-projects/problem?isFullScreen=true
+*/
+
+With CTE as
+(Select *, 
+Lead(end_date) over (order  by start_date) as new_end_date
+from Projects
+Order by start_date)
+ Select *, new_end_date - end_date from CTE
